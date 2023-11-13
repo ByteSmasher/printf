@@ -10,28 +10,33 @@
  */
 
 
-char *get_precision(char *p, params_t *params, va_list ap)
+char *get_precision(char *p, params_t *params, va_list ap) {
 
-{
+    int d = 0;
 
-	int d = 0;
+    // Check if the current character is a dot (.)
+    if (*p != '.') {
+        return p; // If not, return the current pointer
+    }
 
-	if (*p != '.')
-		return (p);
-	p++;
-	if (*p == '*')
-	{
-		d = va_arg(ap, int);
-		p++;
-	}
-	else
-	{
+    p++; // Advance to the next character
 
-		while (_isdigit(*p))
-			d = d * 10 + (*p++ - '0');
+    // Handle optional '*' modifier for dynamic precision
+    if (*p == '*') {
+        // Extract the dynamic precision value from the argument list
+        d = va_arg(ap, int);
+        p++; // Advance to the next character
+    } else {
+        // Parse the precision value from the format string
+        while (_isdigit(*p)) {
+            d = d * 10 + (*p++ - '0');
+        }
+    }
 
-	}
-	params->precision = d;
-	return (p);
+    // Store the extracted precision value in the params structure
+    params->precision = d;
 
+    // Return the pointer to the next character after the precision specifier
+    return p;
 }
+
